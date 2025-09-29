@@ -29,10 +29,15 @@ jobs:
         LEETCODE_USERNAME: ${{ secrets.LEETCODE_USERNAME }}
       run: |
         echo "Starting scheduled submission..."
-        for file in solutions/*.{cpp,py,java}; do
-          echo "Submitting $file..."
-          leetcode submit "$file" \
-            --session "$LEETCODE_SESSION" \
-            --csrftoken "$CSRFTOKEN" \
-            --user "$LEETCODE_USERNAME"
+        for ext in cpp py java; do
+          for file in solution/*.$ext; do
+            if [ -f "$file" ]; then
+            echo "Submitting $file..."
+            leetcode submit "$file" \
+              --session "$LEETCODE_SESSION" \
+              --csrftoken "$CSRFTOKEN" \
+              --user "$LEETCODE_USERNAME"
+            fi
+          done
         done
+
