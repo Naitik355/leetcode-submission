@@ -36,4 +36,3 @@ jobs:
             --csrftoken "$CSRFTOKEN" \
             --user "$LEETCODE_USERNAME"
         done
-
