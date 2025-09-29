@@ -1,0 +1,39 @@
+name: Scheduled LeetCode Auto-Submit
+
+# Run on a schedule (cron) and manual trigger
+on:
+  schedule:
+    - cron: '0 12 * * *'   # Every day at 12:00 UTC
+  workflow_dispatch:        # Optional: allows manual run
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install LeetCode CLI
+      run: npm install -g github:leetcode-tools/leetcode-cli
+
+    - name: Auto-submit solutions
+      env:
+        LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+        CSRFTOKEN: ${{ secrets.CSRFTOKEN }}
+        LEETCODE_USERNAME: ${{ secrets.LEETCODE_USERNAME }}
+      run: |
+        echo "Starting scheduled submission..."
+        for file in solutions/*.{cpp,py,java}; do
+          echo "Submitting $file..."
+          leetcode submit "$file" \
+            --session "$LEETCODE_SESSION" \
+            --csrftoken "$CSRFTOKEN" \
+            --user "$LEETCODE_USERNAME"
+        done
+
